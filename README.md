@@ -77,14 +77,18 @@ http://localhost:5000
 
 ```txt
 ├── public/
-│   ├── index.html
-│   ├── styles.css
-│   └── script.js
+│   └── index.html
 ├── routes/
+│   ├── kexp.js
 │   └── spotify.js
 ├── server.js
+├── services/
+│   ├── kexpService.js
+│   └── spotifyService.js
 ├── .env (ignored)
 ├── .gitignore
+├── package-lock.json
+├── package.json
 └── README.md
 ```
 
