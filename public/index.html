@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summer's Music Recommender</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #ffe4f2 0%, #ffd6eb 50%, #fff0f7 100%);
+  color: #6b3a5c;
+  min-height: 100vh;
+}
+
+.container { 
+  max-width: 900px; 
+  margin: 0 auto; 
+  padding: 40px 20px;
+}
+
+/* 🌸 Header */
+header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+h1 { 
+  font-size: 38px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #ff7eb6, #ff4fa3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle { 
+  color: #b06a8f; 
+  font-size: 14px; 
+}
+
+/* 💕 Controls */
+.controls { 
+  display: flex; 
+  gap: 12px; 
+  margin-bottom: 40px;
+  justify-content: center;
+}
+
+button { 
+  padding: 12px 30px; 
+  background: linear-gradient(135deg, #ffb6d5, #ff8fc4); 
+  border: none; 
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #5a2341;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(255, 143, 196, 0.35);
+}
+
+button:hover { 
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 143, 196, 0.5);
+}
+
+button:active { 
+  transform: translateY(0); 
+}
+
+/* 💖 Now Playing */
+.now-playing {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 182, 213, 0.6);
+  border-radius: 24px;
+  padding: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  box-shadow: 0 12px 35px rgba(255, 182, 213, 0.35);
+}
+
+.album-art {
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(255, 143, 196, 0.4);
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #ffc3dc, #ff9acb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+}
+
+.album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-art.placeholder {
+  background: linear-gradient(135deg, #ffc3dc, #ff9acb);
+}
+
+.track-info h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.track-info .artist {
+  color: #ff5fa2;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.track-info .album {
+  color: #9c5a7d;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.now-playing-badge {
+  display: inline-block;
+  background: #ff8fc4;
+  color: #5a2341;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 🌷 History */
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.track-item {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 16px;
+  border-radius: 16px;
+  border-left: 5px solid #ff8fc4;
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 16px;
+}
+
+.track-item:hover {
+  background: rgba(255, 182, 213, 0.35);
+  transform: translateX(6px);
+}
+
+.track-item-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #ffc3dc, #ff9acb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.track-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.track-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-item-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-item-artist {
+  color: #8f5574;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-item-time {
+  font-size: 12px;
+  color: #b07a96;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+/* 💗 States */
+.loading { 
+  text-align: center;
+  color: #ff5fa2;
+  font-size: 16px;
+  padding: 40px;
+}
+
+.error { 
+  text-align: center;
+  color: #ff6b8b; 
+  padding: 40px;
+  font-size: 16px;
+}
+
+.info {
+  text-align: center;
+  color: #9c5a7d;
+  padding: 40px;
+  font-size: 16px;
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .now-playing {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .album-art {
+    width: 150px;
+    height: 150px;
+  }
+
+  .track-info h2 {
+    font-size: 22px;
+  }
+
+  h1 { 
+    font-size: 28px; 
+  }
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎧 Summer's Music Recommender</h1>
+      <p class="subtitle">Discover and stream your favorite tracks</p>
+    </header>
+    
+    <div class="controls">
+      <button onclick="loginSpotify()" id="loginBtn">🔗 Login with Spotify</button>
+      <button onclick="logout()" id="logoutBtn" style="display:none;">Logout</button>
+      <button onclick="getNowPlaying()" id="nowPlayingBtn" style="display:none;">Now Playing</button>
+      <button onclick="getHistory()" id="historyBtn" style="display:none;">Recent Tracks</button>
+    </div>
+    
+    <div id="content"></div>
+  </div>
+
+  <script>
+    const API = `${window.location.protocol}//${window.location.host}/api`;
+    let accessToken = null;
+    let source = 'spotify';
+
+    // Check for token in URL after Spotify callback
+    window.addEventListener('load', () => {
+      const params = new URLSearchParams(window.location.search);
+      accessToken = params.get('access_token');
+      
+      if (accessToken) {
+        // Remove token from URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        showLoggedIn();
+        getNowPlaying();
+      }
+    });
+
+    function showLoggedIn() {
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+      document.getElementById('nowPlayingBtn').style.display = 'inline-block';
+      document.getElementById('historyBtn').style.display = 'inline-block';
+    }
+
+    function showLoggedOut() {
+      document.getElementById('loginBtn').style.display = 'inline-block';
+      document.getElementById('logoutBtn').style.display = 'none';
+      document.getElementById('nowPlayingBtn').style.display = 'none';
+      document.getElementById('historyBtn').style.display = 'none';
+      document.getElementById('content').innerHTML = '<p class="info">Login with Spotify to get started</p>';
+    }
+
+    function loginSpotify() {
+      window.location.href = `${API}/spotify/login`;
+    }
+
+    function logout() {
+      accessToken = null;
+      showLoggedOut();
+    }
+
+    function showLoading() {
+      document.getElementById('content').innerHTML = '<div class="loading">Loading...</div>';
+    }
+
+    function showError(msg) {
+      document.getElementById('content').innerHTML = `<div class="error">Error: ${msg}</div>`;
+    }
+
+    async function getNowPlaying() {
+      if (!accessToken) {
+        showError('Not logged in');
+        return;
+      }
+
+      showLoading();
+      try {
+        const res = await fetch(`${API}/kexp/now-playing`);
+        const data = await res.json();
+        
+        if (data.on_air && data.on_air.track && data.on_air.track.title) {
+          const track = data.on_air.track;
+          // Search Spotify for album cover
+          const image = await searchSpotifyForImage(track.title, track.artist, accessToken);
+          document.getElementById('content').innerHTML = `
+            <div class="now-playing">
+              <div class="album-art">
+                <img src="${image}" alt="${track.album}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%23667eea%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2260%22%3E🎵%3C/text%3E%3C/svg%3E'">
+              </div>
+              <div class="track-info">
+                <h2>${track.title}</h2>
+                <div class="artist">${track.artist}</div>
+                <div class="album">${track.album || 'KEXP'}</div>
+                <div class="now-playing-badge">▶ Now Playing on KEXP</div>
+              </div>
+            </div>
+          `;
+        } else {
+          document.getElementById('content').innerHTML = '<p class="info">Nothing playing right now</p>';
+        }
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    async function searchSpotifyForImage(title, artist, token) {
+      try {
+        const query = encodeURIComponent(`track:${title} artist:${artist}`);
+        const res = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=5`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.tracks && data.tracks.items && data.tracks.items.length) {
+          // Find the best match - filter by artist name
+          const artistLower = artist.toLowerCase();
+          const match = data.tracks.items.find(track => 
+            track.artists.some(a => a.name.toLowerCase() === artistLower)
+          ) || data.tracks.items[0];
+          return match.album.images[0]?.url || null;
+        }
+      } catch (e) {
+        console.log('Could not get image from Spotify');
+      }
+      return null;
+    }
+
+    async function getHistory() {
+      if (!accessToken) {
+        showError('Not logged in');
+        return;
+      }
+
+      showLoading();
+      try {
+        const res = await fetch(`${API}/kexp/history?limit=20`);
+        const data = await res.json();
+
+        let html = '';
+        if (data.results && data.results.length) {
+          html = '<div class="history-list">';
+          for (const item of data.results) {
+            const track = item.track;
+            const time = new Date(item.played_at);
+            const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const image = await searchSpotifyForImage(track.title, track.artist, accessToken);
+            html += `
+              <div class="track-item">
+                <div class="track-item-image">
+                  <img src="${image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22%3E%3Crect fill=%22%23667eea%22 width=%2260%22 height=%2260%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2230%22%3E🎵%3C/text%3E%3C/svg%3E'}" alt="${track.album}">
+                </div>
+                <div class="track-item-content">
+                  <div class="track-item-title">${track.title}</div>
+                  <div class="track-item-artist">${track.artist}</div>
+                  <div class="track-item-time">${timeStr}</div>
+                </div>
+              </div>
+            `;
+          }
+          html += '</div>';
+        }
+        document.getElementById('content').innerHTML = html || '<p class="error">No tracks found</p>';
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    // Show initial state
+    showLoggedOut();
+  </script>
+</body>
+</html>
