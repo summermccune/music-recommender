@@ -1,39 +1,15 @@
-# Music Recommender
+# Summer's Music Recommender
 
-A web application that connects to Spotify to display your currently playing track and provide music recommendations based on listening data.
-
-This project focuses on working with the Spotify Web API, OAuth authentication, and building a clean frontend to surface real-time music information.
+A web application that connects to Spotify and various radio stations to discover new music.
 
 ---
 
 ## Features
 
 * Connects securely to a Spotify account using OAuth 2.0
-* Displays the currently playing track
-* Shows recent listening history and recommendations
-* Allows playback control through Spotify (Premium required)
+* Displays the currently playing track on radio stations
+* Shows the recent tracks played for the radio stations
 * Responsive layout for desktop and mobile
-
----
-
-## Tech Stack
-
-**Frontend**
-
-* HTML
-* CSS
-* Vanilla JavaScript
-
-**Backend**
-
-* Node.js
-* Express
-
-**APIs & SDKs**
-
-* Spotify Web API
-* Spotify Web Playback SDK
-* KEXP API
 
 ---
 
@@ -81,8 +57,6 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 SPOTIFY_REDIRECT_URI=http://localhost:5000/api/spotify/callback
 ```
 
-**Do not commit the `.env` file.**
-
 ---
 
 ### Run the Application
@@ -121,15 +95,6 @@ http://localhost:5000
 * Spotify Premium is required for full playback
 * Some tracks may not provide preview URLs
 * Rate limits apply based on Spotify API usage
-
----
-
-## Future Improvements
-
-* Improved recommendation logic
-* Enhanced playback controls
-* Better error handling and loading states
-* Expanded analytics on listening habits
 
 ---
 
