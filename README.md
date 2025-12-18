@@ -54,7 +54,7 @@ PORT=5000
 KEXP_API_BASE=http://live.kexp.org/api/v2
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_REDIRECT_URI=http://localhost:5000/api/spotify/callback
+SPOTIFY_REDIRECT_URI=your_redirect_uri (I used ngrok for this)
 ```
 
 ---
